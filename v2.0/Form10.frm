@@ -137,9 +137,12 @@ Private Sub Command1_Click()
         .Open "select * from Factura where ((Factura.[Fecha])= " & y & ")", base, adOpenStatic, adLockBatchOptimistic
         If .EOF Or .BOF Then MsgBox "Fecha (Hasta) no existente": Exit Sub
         If .State = 1 Then .Close
-        .Open "select * from Factura WHERE ((Factura.[Fecha])>= " & x & ") AND ((Factura.[Fecha])<= " & y & ") AND [Valido]like '" & z & "'", base, adOpenStatic, adLockBatchOptimistic
+        '.Open "select * from Factura WHERE ((Factura.[Fecha])>= " & x & ") AND ((Factura.[Fecha])<= " & y & ") AND [Valido]like '" & z & "'", base, adOpenStatic, adLockBatchOptimistic
+        .Open "select Factura.*, Cliente.Id_C, Cliente.Nombre from Factura, Cliente where Factura.Id_C=Cliente.Id_C AND ((Factura.[Fecha])>= " & x & ") AND ((Factura.[Fecha])<= " & y & ") AND [Valido]like '" & z & "'", base, adOpenStatic, adLockBatchOptimistic
     End With
     Set Form9.DataGrid1.DataSource = Fact
+    grilla
+    Form9.Command8.Enabled = True
 End Sub
 
 Private Sub Command2_Click()
@@ -149,10 +152,13 @@ Private Sub Command2_Click()
     With Fact
         x = Text4.Text
         If .State = 1 Then .Close
-        .Open "select * from Factura WHERE ((Factura.Total)> " & x & ") AND [Valido]like '" & z & "'", base, adOpenStatic, adLockBatchOptimistic
+        '.Open "select * from Factura WHERE ((Factura.Total)> " & x & ") AND [Valido]like '" & z & "'", base, adOpenStatic, adLockBatchOptimistic
+        .Open "select Factura.*, Cliente.Id_C, Cliente.Nombre from Factura, Cliente where Factura.Id_C=Cliente.Id_C AND ((Factura.Total)> " & x & ") AND [Valido]like '" & z & "'", base, adOpenStatic, adLockBatchOptimistic
         If .EOF Or .BOF Then MsgBox "No hay factura con un mayor total": Exit Sub
     End With
     Set Form9.DataGrid1.DataSource = Fact
+    grilla
+    Form9.Command8.Enabled = True
 End Sub
 
 Private Sub Command3_Click()
@@ -170,10 +176,21 @@ Private Sub Text1_Change()
         If .State = 1 Then .Close
         .Open "select * from Factura where [Id_C]like '" & x & "' and [Valido]like '" & z & "'", base, adOpenStatic, adLockBatchOptimistic
         If .EOF Or .BOF Then Exit Sub
+        If .State = 1 Then .Close
+        .Open "select Factura.*, Cliente.Id_C, Cliente.Nombre from Factura, Cliente where Factura.Id_C=Cliente.Id_C AND [Factura.Id_C]like '" & x & "' and [Valido]like '" & z & "'", base, adOpenStatic, adLockBatchOptimistic
+        If .EOF Or .BOF Then Exit Sub
         Form9.Label3.Caption = x
         Me.Hide
     End With
     Form9.Label2 = "T"
     Form9.Label4.Caption = "1"
     Set Form9.DataGrid1.DataSource = Fact
+    grilla
+    Form9.Command8.Enabled = True
+End Sub
+
+Sub grilla()
+    Form9.DataGrid1.Columns(6).Width = 0
+    Form9.DataGrid1.Columns(7).Width = 0
+    Form9.DataGrid1.Columns(8).Width = 0
 End Sub

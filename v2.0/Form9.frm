@@ -12,6 +12,15 @@ Begin VB.Form Form9
    ScaleHeight     =   6465
    ScaleWidth      =   12360
    StartUpPosition =   3  'Windows Default
+   Begin VB.CommandButton Command8 
+      Caption         =   "Crear Reporte"
+      Enabled         =   0   'False
+      Height          =   495
+      Left            =   7920
+      TabIndex        =   15
+      Top             =   3720
+      Width           =   1815
+   End
    Begin VB.Timer Timer1 
       Interval        =   1
       Left            =   11520
@@ -418,20 +427,31 @@ Private Sub Command7_Click()
     End If
 End Sub
 
+Private Sub Command8_Click()
+    Command8.Enabled = False
+    Set DataReport2.DataSource = Fact
+    y = App.Path
+    'DataReport2.Sections("Sección4").Controls("Image1").Picture = LoadPicture(y & "\img\logo.jpg")
+    DataReport2.Show
+End Sub
+
 Private Sub DataGrid1_Click()
     If DataGrid1.ApproxCount < 1 Then Exit Sub
     If Command7.Caption = "Ver Facturas False" Then Command3.Enabled = True
     If Label2.Caption = "T" Then
         With Fact
+            If !Valido = "False" Then Command3.Enabled = False
             Label1.Caption = !Id_F
         End With
     Else
         If Label5.Caption <> "T" Then
             With Adodc1.Recordset
+                If !Valido = "False" Then Command3.Enabled = False
                 Label1.Caption = !Id_F
             End With
         Else
             With Fact
+                If !Valido = "False" Then Command3.Enabled = False
                 Label1.Caption = !Id_F
             End With
         End If
@@ -468,7 +488,7 @@ Sub carga3()
     DataGrid1.Columns(6).Width = 0
 End Sub
 
-Private Sub DataGrid1_DblClick()
+Sub f()
     With DataReport1
         .Sections("Sección4").Controls("Etiqueta1").Caption = Label1.Caption
     End With
